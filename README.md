@@ -78,3 +78,60 @@
             isOpen: !this.state.isOpen
         })
     }
+
+#LESSON TWO
+
+#API компонентов
+Дефолтные пропсы, если пропсы не приходят то они становятся по дефолту пустым массивом, в нашем случае не надо будет делать лишнию проверку 
+
+static defaultProps = {
+    comments: []
+}
+
+в реальной жизни в один компонент приходит много пропсов и для этого их можно описать proptypes(npm i prop-types --S) => import PropTypes from 'prop-types'
+
+ static propTypes = {
+        article: PropTypes.shape({
+            id: PropTypes.string.isRequired, //обязательные поля, должны придти обязательно 
+            title: PropTypes.string.isRequired,
+            text: PropTypes.string //не обязательные
+        }).isRequired
+    }
+    описание интерфейса компонента 
+
+#Декораторы
+декоратор это функция, которая оборачвает компонент. Он принимает на вход какой-либо компонент, который мы хотим задекорировать, для которого мы хотим добавить какую-либо функциональность, а возвращать будет новый компонент, его метод render должен вернуть то, чтобы из вне не знали завернутый это компонент или нет, т.к. это будет метод переиспользования кода (в реальном доме не должны знать что мы его декорировали) => новый компонент должен выглядеть точно так же как оригинальный, для этого создадим этот оригинальный компонент:
+~~~~~   import React, {Component as ReactComponent} from 'react'
+
+        export default (OriginalComponent) => class WrappedComponent extends ReactComponent {
+            render() {
+                return <OriginalComponent/>  // создали оригинальный компонент
+            }
+        }
+
+
+что бы этот оригинальный компонент выглядел точно так же, сверху у него должен оставаться такой же API (WrappedComponent должен остаться такой же API как мы ожидали), для этого используем спред оператор {...this.props}, спред аналогичен тому что мы делаем в функции:
+
+const func = (...args) => {
+    console.log('__', ...args)
+    return originalFunc(...args) //не важно тчо это за аргументы, мы просто передаем их транзитом из обвертки в нашу оригинальную фунцию
+}
+
+с компонентами все аналогично:
+
+   ~~~~~   import React, {Component as ReactComponent} from 'react'
+
+            export default (OriginalComponent) => class WrappedComponent extends ReactComponent {
+                render() {
+                   return <OriginalComponent {...this.props}/>
+                }
+            } 
+
+
+если хотим использовать наш декоратор с каким либо компонентом, то заимпортим его в этот компонент (import toggleOpen from '../decorators/toggleOpen') (toggleOpen обычная функция которая принимает компонент и возвращает тоже компонент, мы будем передавать в эту функцию компонент Article а возвращать обвертку над этим Article ), а вот экспортить мы будем обернутый компонент! (export default toggleOpen(Article)) => в ArticleList будет уже использоваться не Article а обертку над статьей
+
+затем в обертку добавим функционал который зхотим переиспользовать (инициализация состояния)
+
+
+
+
