@@ -7,6 +7,7 @@ class Contact extends Component {
 
   render() {
     const { contact } = this.props;
+    // console.log(contact);
     const info = (
       <div>
         <hr />
